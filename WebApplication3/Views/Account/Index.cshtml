@@ -1,0 +1,114 @@
+﻿@using WebApplication3.Models
+@using WebApplication3.Controllers
+@model IEnumerable<User>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div style="padding-top:20px">
+        Hello, @User.Identity.Name!
+        @Html.ActionLink("Logout", "Logoff", "Account", new { @class = "btn btn-primary btn-xs" })
+    </div>
+    <script type="text/javascript">
+
+        function SelectAll(field) {
+            console.log(field);
+            for (i = 0; i < field.length; i++) {
+                if (field[i].selectedUsers.checked == true) field[i].selectedUsers.checked = false;
+                else field[i].selectedUsers.checked = true;
+            }
+        };
+
+        function SelectedCheckbox(str) {
+            var checkedArray = new Array();
+            $("input[name='selectedUsers']:checked")
+                .each(function () {
+                    checkedArray.push($(this).val());
+                });
+            console.log(checkedArray);
+            $.ajax({
+                type: "POST",
+                url: str,
+                dataType: "text",
+                data: { 'selectedItems': checkedArray },
+                success: function (response) {
+                    location.reload();
+                }
+            });
+            return;
+        }
+    </script>
+    <br>
+    <button type="submit" formaction="Block" value="v1" onclick="SelectedCheckbox('@Url.Action("Block", "Account")')" style="width:55px; height:35px" class="btn btn-primary btn-xs">Block</button>
+
+    <button type="submit" formaction="Delete" value="v1" onclick="SelectedCheckbox('@Url.Action("Delete", "Account")')" style="border: 0; background: transparent">
+        <img src="~/Content/img/delete-button-recyclebin.png" width="43px" height="50px" alt="delete-icon" />
+    </button>
+
+    <button type="submit" formaction="Unlock" value="v2" onclick="SelectedCheckbox('@Url.Action("Unlock", "Account")')" style="border: 0; background: transparent">
+        <img src="~/Content/img/unblock_icon.png" width="50px" height="50px" alt="unblock-icon" />
+    </button>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Учетные записи
+        </div>
+        <table class="table table-striped">
+            <body class="table-responsive ">
+                <tr>
+                    <th>
+                        <button style="border: 0; background: transparent" onClick="SelectAll(document.selection)">Выделить все/<br>Снять выделение</button>
+                    </th>
+                    <th>Id</th>
+                    <th>Имя</th>
+                    <th>Email</th>
+                    <th>Дата регистрации</th>
+                    <th>Дата последнего логина</th>
+                    <th>Статус</th>
+                </tr>
+
+
+                @if (Model == null) //(Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="3" class="text-center">Нет ни одной учетной записи</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <form name="selection">
+                                    <input type="checkbox" value="@user.Id" name="selectedUsers" class="one" data-id="d1">
+                                </form>
+                            </td>
+                            <td>@user.Id</td>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <th>@user.RegistrationDate</th>
+                            <th>@user.LoginDate</th>
+                            <th>@user.Status</th>
+                        </tr>
+                    }
+                }
+                </body>
+
+        </table>
+    </div>
+}
+else
+{
+    <div style="padding-top:25px">Чтобы продолжить работу с данными, Вам необходимо войти в систему.</div>
+    <hr>
+    <label>
+        @Html.ActionLink("Вход", "Login", "Account")
+    </label>
+    <hr>
+    <label>
+        @Html.ActionLink("Регистрация нового пользователя", "Register", "Account")
+    </label>
+}

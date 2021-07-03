@@ -17,21 +17,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("TASK5_WEB", "Index", "Account", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Table of users", "Index", "Account", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Домашняя страница", "Index", "Account")</li>
-                    <li>@Html.ActionLink("Связаться", "Contact", "Account")</li>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        @Html.ActionLink("Hello, " + @User.Identity.Name + "!", "Index", "Account")
+                    </li>
+                    <li>@Html.ActionLink("Logout", "Logoff", "Account")</li>
                 </ul>
-            </div>
+            </div> 
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
+            <p>&copy; @DateTime.Now.Year - ASP.NET</p>
         </footer>
     </div>
 

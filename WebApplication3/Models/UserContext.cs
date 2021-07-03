@@ -8,7 +8,7 @@ namespace WebApplication3.Models
 {
     public class UserContext : IdentityDbContext<User>
     {
-        public UserContext() : base("DefaultConnection")//"DefaultConnection"
+        public UserContext() : base("UsersDb")//"DefaultConnection"
         { }
     }
 }

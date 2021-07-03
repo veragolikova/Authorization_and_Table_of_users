@@ -4,43 +4,8 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
 @if (User.Identity.IsAuthenticated)
 {
-    <div style="padding-top:20px">
-        Hello, @User.Identity.Name!
-        @Html.ActionLink("Logout", "Logoff", "Account", new { @class = "btn btn-primary btn-xs" })
-    </div>
-    <script type="text/javascript">
-
-        function SelectAll(field) {
-            console.log(field);
-            for (i = 0; i < field.length; i++) {
-                if (field[i].selectedUsers.checked == true) field[i].selectedUsers.checked = false;
-                else field[i].selectedUsers.checked = true;
-            }
-        };
-
-        function SelectedCheckbox(str) {
-            var checkedArray = new Array();
-            $("input[name='selectedUsers']:checked")
-                .each(function () {
-                    checkedArray.push($(this).val());
-                });
-            console.log(checkedArray);
-            $.ajax({
-                type: "POST",
-                url: str,
-                dataType: "text",
-                data: { 'selectedItems': checkedArray },
-                success: function (response) {
-                    location.reload();
-                }
-            });
-            return;
-        }
-    </script>
-    <br>
     <button type="submit" formaction="Block" value="v1" onclick="SelectedCheckbox('@Url.Action("Block", "Account")')" style="width:55px; height:35px" class="btn btn-primary btn-xs">Block</button>
 
     <button type="submit" formaction="Delete" value="v1" onclick="SelectedCheckbox('@Url.Action("Delete", "Account")')" style="border: 0; background: transparent">
@@ -95,7 +60,7 @@
                         </tr>
                     }
                 }
-                </body>
+            </body>
 
         </table>
     </div>
@@ -112,3 +77,32 @@ else
         @Html.ActionLink("Регистрация нового пользователя", "Register", "Account")
     </label>
 }
+<script type="text/javascript">
+
+    function SelectAll(field) {
+        console.log(field);
+        for (i = 0; i < field.length; i++) {
+            if (field[i].selectedUsers.checked == true) field[i].selectedUsers.checked = false;
+            else field[i].selectedUsers.checked = true;
+        }
+    };
+
+    function SelectedCheckbox(str) {
+        var checkedArray = new Array();
+        $("input[name='selectedUsers']:checked")
+            .each(function () {
+                checkedArray.push($(this).val());
+            });
+        console.log(checkedArray);
+        $.ajax({
+            type: "POST",
+            url: str,
+            dataType: "text",
+            data: { 'selectedItems': checkedArray },
+            success: function (response) {
+                location.reload();
+            }
+        });
+        return;
+    }
+</script>

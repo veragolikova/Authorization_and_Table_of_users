@@ -4,6 +4,8 @@ using System;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using WebApplication3.Models;
@@ -12,12 +14,10 @@ namespace WebApplication3.Controllers
 {
     public class AccountController : Controller
     {
-        // GET: Account
         public UserContext db = new UserContext();
-
+        private string keyForHmac = "281269751949953238506636101247451493";
         public AccountController()
         { }
-
         public AccountController(UserContext context)
         {
             db = context;
@@ -25,12 +25,6 @@ namespace WebApplication3.Controllers
         public ActionResult Index()
         {
             return View(db.Users.ToList());
-        }
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
         }
         public ActionResult Login()
         {
@@ -44,7 +38,8 @@ namespace WebApplication3.Controllers
             if (ModelState.IsValid)
             {
                 User user = null;
-                user = db.Users.FirstOrDefault(u => u.Name == model.Name && u.Password == model.Password);
+                string string1 = GetHash(model.Password, keyForHmac);
+                user = db.Users.FirstOrDefault(u => u.Name == model.Name && u.Password == string1);
                 if (user != null)
                 {
                     FormsAuthentication.SetAuthCookie(model.Name, true);
@@ -77,10 +72,11 @@ namespace WebApplication3.Controllers
                 User user = null;
                 user = db.Users.FirstOrDefault(u => u.Name == model.Name);
                 if (user == null)
-                {
-                    db.Users.Add(new User { UserName = model.Name, Name = model.Name, Email = model.Email, Password = model.Password, LoginDate = DateTime.Now, RegistrationDate = DateTime.Now, Status = "Unlocked" });
+                { 
+                    db.Users.Add(new User { UserName = model.Name, Name = model.Name, Email = model.Email, Password = GetHash(model.Password, keyForHmac), LoginDate = DateTime.Now, RegistrationDate = DateTime.Now, Status = "Unlocked" });
                     db.SaveChanges();
-                    user = db.Users.Where(u => u.Name == model.Name && u.Password == model.Password).FirstOrDefault();
+                    string string1 = GetHash(model.Password, keyForHmac);
+                    user = db.Users.Where(u => u.Name == model.Name && u.Password == string1).FirstOrDefault();
                     if (user != null)
                     {
                         FormsAuthentication.SetAuthCookie(model.Name, true);
@@ -154,6 +150,16 @@ namespace WebApplication3.Controllers
                 db.SaveChanges();
             }
             return Json(new { redirectToUrl = Url.Action("Index") });
+        }    
+        public static String GetHash(String text, String key)
+        {
+            ASCIIEncoding encoding = new ASCIIEncoding();
+            Byte[] textBytes = encoding.GetBytes(text);
+            Byte[] keyBytes = encoding.GetBytes(key);
+            Byte[] hashBytes;
+            using (HMACSHA256 hash = new HMACSHA256(keyBytes))
+                hashBytes = hash.ComputeHash(textBytes);
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
         }
     }
 }

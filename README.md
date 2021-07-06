@@ -1,4 +1,4 @@
-# WebApplication3
+# Authorization and Table of users
 
 Web-приложение, которое позволяет пользователям зарегистрироваться и аутентифицироваться.
 

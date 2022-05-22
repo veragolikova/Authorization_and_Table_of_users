@@ -1,5 +1,15 @@
 # Authorization and Table of users
 
+ Web application that allows users to register and authenticate.
+
+- **Unauthenticated** users do not have access to user management (can only access the registration form or the authentication form).
+- **Authenticated** users see a table (table with id, name, email, registration date, last login date, status) with users.
+- The table in the left column contains checkboxes for multiple selection, in the column header there is a checkbox "select all/deselect". Above the table *toolbar* with actions: Block (button with text), Unblock (icon), Delete (icon).
+- The user can delete or block himself - at the same time he must be logged out immediately. If someone else blocks or deletes the user, any next action will redirect the user to the login page.
+- While registrating it is possible to use any password, even one character.
+
+_________________________________________________________________________________________________________________________________________________________________________
+
 Web-приложение, которое позволяет пользователям зарегистрироваться и аутентифицироваться.
 
 - **Неаутентифицированные** пользователи не имеют доступа к управлению пользователями (могут достучаться только к форме регистрации или форме аутентификации).
